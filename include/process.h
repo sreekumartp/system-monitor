@@ -24,7 +24,8 @@ class Process {
    void SetRam(string ram);
    void SetUpTime(long int uptime);
    void SetCommand(string cmd);
-
+   void SetUid(int pid);
+   string GetUid(){return _uid;}
     Process()
     {
 
@@ -34,6 +35,7 @@ class Process {
         _cpu=99.98;
         _ram="full";
         _uptime = 65535;
+        _uid="uid";
 
     }
   // TODO: Declare any necessary private members
@@ -44,6 +46,7 @@ class Process {
     float _cpu;
     string _ram;
     long int _uptime;
+    string _uid;
 
 };
 

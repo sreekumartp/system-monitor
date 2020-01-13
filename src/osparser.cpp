@@ -59,18 +59,25 @@ using namespace LinuxParser;
 
           // get the cpu utilization for the pid 
           auto Jiff = ActiveJiffies(pid);
+          
+          //get cpu usage for the pid
+          auto cpu_usage = Cpu(pid);
     
+          //get user id
+          auto uid = Uid(pid);
 
           prcs.SetPid(pid);
           prcs.SetRam(mem);
           prcs.SetCommand(cmd);
-          prcs.SetCpu(Jiff);
+          prcs.SetCpu(cpu_usage);
           prcs.SetUser(usr);
           prcs.SetUpTime(ut);
-          
-          lnxprocesses.push_back(prcs);
+                    
+          lnxprocesses.emplace_back(prcs);
 
         }
+
+            reverse(lnxprocesses.begin(), lnxprocesses.end()); 
       }
 
       return lnxprocesses;
