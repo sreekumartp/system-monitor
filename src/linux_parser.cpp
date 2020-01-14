@@ -127,7 +127,7 @@ string cmd="unknown";
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid[[maybe_unused]]) 
+string LinuxParser::Ram(int pid) 
 { 
   
   //kProcDirectory+pid+kStatusFilename
@@ -148,7 +148,8 @@ string LinuxParser::Ram(int pid[[maybe_unused]])
 
       std::replace(line.begin(), line.end(), ' ', '_');
       std::istringstream linestream(line);
-      {
+      linestream  >>  key >> value;
+      
         if (key == "VmSize:") 
         {
           std::replace(value.begin(), value.end(), '_', ' ');
@@ -159,22 +160,19 @@ string LinuxParser::Ram(int pid[[maybe_unused]])
           stringstream val(value);
           stringstream ss2;
           float x=0;
-          val >> x;
+   
+          x=stof(val.str(),nullptr);
           x= x/1024;
-
           ss2 << x;
-          
+                    
           auto value1=ss2.str();
          
          // std::cout << "value :" << value << std::endl; 
          stream.close();
-          return value1;
+        return value1;
         }
         else value = "0";
-      }
-
-
-      
+            
     }
 
   }
@@ -274,8 +272,8 @@ std::ifstream stream(kProcDirectory + ss.str()+ kStatusFilename);
 }
 
 // TODO: Read and return the uptime of a process
-// REMOVE: [[maybe_unused]] once you define the function
-long int LinuxParser::UpTime(int pid[[maybe_unused]]) 
+
+long int LinuxParser::UpTime(int pid) 
 { 
 
 stringstream ss;
@@ -359,28 +357,30 @@ float LinuxParser::Cpu(int pid)
 stringstream ss;
 string line;
 string value;
-string str1[23];
-//TODO: get uptime
+string str1[53];
 
-float uptime=0.0;
-float p_utime=0.0;
-float p_stime=0.0;
-float p_cutime=0.0;
-float p_cstime=0.0;
-float p_starttime=0.0;
+long ticks_per_sec=0;
+long  uptime=0;
+long  p_utime=0;
+long  p_stime=0;
+long  p_cutime=0;
+long  p_cstime=0;
+long  p_starttime=0;
+long  total_time=0;
 float cpu_usage=0.0;
+
 
 std::ifstream stream("/proc/uptime");
  if (stream.is_open()) 
  {
-  while (std::getline(stream, line)) 
-    {
+      std::getline(stream, line); 
+    
       std::istringstream linestream(line);
       linestream  >>  str1[0] >> str1[1];
-      uptime= std::stof(str1[0],nullptr); 
+      uptime= std::stol(str1[0],nullptr); 
       stream.close();
-      break;
-    }
+     
+    
  }
 
   ss << pid;
@@ -393,7 +393,10 @@ std::ifstream stream("/proc/uptime");
       linestream  >>  str1[0] >> str1[1] >> str1[2] >> str1[3] >> str1[4] >> str1[5] >> str1[6] >> str1[7] >> str1[8] >> \
       str1[9] >> str1[10] >> str1[11] >> str1[12] >> str1[13] >> str1[14] >> str1[15] >> \
       str1[16] >> str1[17] >> str1[18] >> str1[19] >> \
-      str1[20] >> str1[21] >> str1[22] ;
+      str1[20] >> str1[21] >> str1[22] >> str1[23] >> str1[24] >> str1[25] >> str1[26] >> str1[27] >> str1[28] >> str1[29] >> \
+      str1[30] >> str1[31] >> str1[32] >> str1[33] >> str1[34] >> str1[35] >> str1[36] >> str1[37] >> str1[38] >> str1[39] >> \
+      str1[40] >> str1[41] >> str1[42] >> str1[43] >> str1[44] >> str1[45] >> str1[46] >> str1[47] >> str1[48] >> str1[49] >> \
+      str1[50] >> str1[51] ;
 
       p_utime=std::stof(str1[13],nullptr);
       p_stime=std::stof(str1[14],nullptr); 
@@ -401,16 +404,18 @@ std::ifstream stream("/proc/uptime");
       p_cstime=std::stof(str1[16],nullptr);
       p_starttime=std::stof(str1[21],nullptr);
 
-      auto total_time= p_utime+p_stime;
-      total_time = total_time+ p_cutime + p_cstime;
+      total_time= p_utime+p_stime;
+      total_time = total_time + p_cutime + p_cstime;
+      //std::cout << "total time : " << total_time <<std::endl;
       
+      ticks_per_sec=sysconf(_SC_CLK_TCK);
       //seconds = uptime - (starttime / Hertz)
-      auto seconds = uptime - (p_starttime/sysconf(_SC_CLK_TCK));
-    
+      float secs = (float) (uptime - (p_starttime/ticks_per_sec));
+        //std::cout << "secs : " << secs <<std::endl;
       //cpu_usage = 100 * ((total_time / Hertz) / seconds)
       
-      cpu_usage = 100 * ((total_time / sysconf(_SC_CLK_TCK))/seconds);
-    
+      cpu_usage = 100.0 * ((total_time / ticks_per_sec)/secs);
+          //std::cout << "cpu_usage : " << cpu_usage <<std::endl;  
   }
 
   return cpu_usage;

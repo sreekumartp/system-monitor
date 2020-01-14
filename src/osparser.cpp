@@ -13,6 +13,14 @@ using namespace LinuxParser;
     vector <Process> LnxParser::GetProcessData()
     {
 
+      int pid;
+      string mem;
+      long int ut;
+      string usr;
+      string cmd;
+      float cpu;
+      string uid;
+
       pidvect= Pids();
 
       //cout << "LnxParser:getpids() " << endl;
@@ -39,32 +47,32 @@ using namespace LinuxParser;
         for(size_t i = 0; i < pidvect.size() ;i++)
         {
           // get with pid number
-          auto pid = pidvect[i];
+           pid = pidvect[i];
          
           // get the mem utilization for the pid 
-          auto mem = Ram(pid);
+           mem = Ram(pid);
          
 
           // get the uptime for the pid 
-          auto ut = UpTime(pid);
+           ut =  LinuxParser::UpTime(pid);
          
 
           // get the owner/user for the pids 
-          auto usr = User(pid);
+           usr =  LinuxParser::User(pid);
        
 
           // get the command that create the pid
-          auto cmd = Command(pid);
+           cmd = Command(pid);
         
 
           // get the cpu utilization for the pid 
           auto Jiff = ActiveJiffies(pid);
           
           //get cpu usage for the pid
-          auto cpu_usage = Cpu(pid);
+          float cpu_usage =  LinuxParser::Cpu(pid);
     
           //get user id
-          auto uid = Uid(pid);
+          uid = Uid(pid);
 
           prcs.SetPid(pid);
           prcs.SetRam(mem);
