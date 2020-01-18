@@ -36,6 +36,8 @@ public:
   int GetTotalProcesses();
   int GetActiveProcesses(); 
   float GetMemoryUtilization();
+  std::vector<std::string> GetCpuUtilization();
+
 };
 
 

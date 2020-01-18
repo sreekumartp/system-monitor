@@ -9,6 +9,7 @@
 #include "linux_parser.h"
 
 using std::stof;
+using std::stol;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -151,7 +152,75 @@ long LinuxParser::ActiveJiffies() { return 0; }
 long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+vector<string> LinuxParser::CpuUtilization() 
+{ 
+#if 0
+  int num_cpus=4;
+  vector <string> cpu(num_cpus,"0");
+
+  cpu[0]="45.6";
+  cpu[1]="54.1";
+  cpu[2]="67.6";
+  cpu[3]="14.1";  
+#endif
+
+string user;
+string nice;
+string system;
+string idle;
+string iowait;
+string irq;
+string softirq;
+string steal;
+string guest;
+string guest_nice;
+
+stringstream ss;
+string line;
+float util;
+float total_time;
+
+
+long num_cpus = sysconf(_SC_NPROCESSORS_ONLN);
+vector <string> cpu(num_cpus,"0");
+long count=0;
+
+  std::ifstream stream(kProcDirectory + kStatFilename);
+
+  if (stream.is_open()) 
+  {
+
+    while (std::getline(stream, line) && count < num_cpus) 
+    {
+      std::istringstream linestream(line);
+      linestream  >>  user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+
+     // util = std::stof(user,nullptr) ;
+
+      total_time  = stof(nice,nullptr) ;
+      total_time += stof(system,nullptr) ;
+      total_time += stof(idle,nullptr) ;
+      total_time += stof(iowait,nullptr) ;
+      total_time += stof(irq,nullptr) ;
+      total_time += stof(softirq,nullptr) ;
+      total_time += stof(steal,nullptr); 
+
+      float idle_time= stof(idle,nullptr);
+      util = (1.0 - idle_time/total_time);
+
+      std::ostringstream ss;
+      ss << util;
+      std::string s(ss.str());
+      cpu[count]=s;
+      count++;
+    }
+    stream.close();
+    return cpu;
+
+  }
+
+  return cpu ; 
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { 
@@ -173,9 +242,6 @@ int LinuxParser::RunningProcesses() {
   //first get list of process.
 
    vector<int> vect_of_pids;
-
-  vect_of_pids=Pids();
-  //then open /proc/[pid]/stat
 
   int num_of_pids=vect_of_pids.size();
 

@@ -47,7 +47,11 @@ using namespace LinuxParser;
       return LinuxParser::MemoryUtilization();
     }
 
+      std::vector<std::string> LnxParser::GetCpuUtilization()
+      {
 
+        return LinuxParser::CpuUtilization();
+      }
 
 
     vector <Process> LnxParser::GetProcessData()

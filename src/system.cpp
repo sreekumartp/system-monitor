@@ -15,7 +15,29 @@ using std::string;
 using std::vector;
 
 // TODO: Return the system's CPU
-Processor& System::Cpu() { return cpu_; }
+Processor& System::Cpu() { 
+  
+  //Processor p ;
+
+  
+  LnxParser lp;
+  
+  
+
+  std::vector<std::string> cpu = lp.GetCpuUtilization();
+
+
+  
+  for(int i=0; i< cpu.size();i++)
+  {
+
+    Processor p;
+    p.SetUtlization(cpu[i]);
+    cpu_ =p;
+    
+    return cpu_; 
+    }
+  }
 
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
