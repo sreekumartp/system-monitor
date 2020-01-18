@@ -35,6 +35,7 @@ public:
   long int GetUpTime();
   int GetTotalProcesses();
   int GetActiveProcesses(); 
+  float GetMemoryUtilization();
 };
 
 

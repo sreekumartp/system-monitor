@@ -34,12 +34,20 @@ using namespace LinuxParser;
 
     }
 
-       int LnxParser:: GetActiveProcesses()
-      {
+    int LnxParser::GetActiveProcesses()
+    {
 
       
         return LinuxParser::RunningProcesses();
-      }
+    }
+
+    float LnxParser::GetMemoryUtilization()
+    {
+
+      return LinuxParser::MemoryUtilization();
+    }
+
+
 
 
     vector <Process> LnxParser::GetProcessData()
