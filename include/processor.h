@@ -5,13 +5,12 @@
 using namespace std;
 
 class Processor {
- public:
-  float Utilization();  // TODO: See src/processor.cpp
+public:
+  float Utilization(); // TODO: See src/processor.cpp
   void SetUtlization(string util);
   // TODO: Declare any necessary private members
- private:
-    string utilization_;
-
+private:
+  string utilization_;
 };
 
 #endif

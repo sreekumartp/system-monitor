@@ -1,16 +1,14 @@
-#include <string>
 #include "processor.h"
+#include <string>
 using namespace std;
 
 // TODO: Return the aggregate CPU utilization
-float Processor::Utilization()
- { 
-   
-    float util=0.0;
+float Processor::Utilization() {
 
-    util=std::stof(utilization_,nullptr);
-    
-    return util;
+  float util = 0.0;
 
-  }
-  void Processor:: SetUtlization(string util) {  utilization_ = util;}
+  util = std::stof(utilization_, nullptr);
+
+  return util;
+}
+void Processor::SetUtlization(string util) { utilization_ = util; }

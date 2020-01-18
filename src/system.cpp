@@ -1,13 +1,13 @@
-#include <unistd.h>
 #include <cstddef>
 #include <set>
 #include <string>
+#include <unistd.h>
 #include <vector>
 
+#include "lnxosparser.h"
 #include "process.h"
 #include "processor.h"
 #include "system.h"
-#include "lnxosparser.h"
 
 using std::set;
 using std::size_t;
@@ -15,98 +15,87 @@ using std::string;
 using std::vector;
 
 // TODO: Return the system's CPU
-Processor& System::Cpu() { 
-  
-  //Processor p ;
+Processor &System::Cpu() {
 
-  
-  LnxParser lp;
-  
-  
+  // Processor p ;
+
+  OSParser lp;
 
   std::vector<std::string> cpu = lp.GetCpuUtilization();
 
-
-  
-  for(int i=0; i< cpu.size();i++)
-  {
+  for (int i = 0; i < (int)cpu.size(); i++) {
 
     Processor p;
     p.SetUtlization(cpu[i]);
-    cpu_ =p;
-    
-    return cpu_; 
-    }
+    cpu_ = p;
+
+    return cpu_;
   }
+  return cpu_;
+}
 
 // TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { 
-    
-  //todo: fill a vector of process objects 
-  //todo : get the process object
-  //todo : add to the vector
-  //toco : fill until no more process obejects left.
-  //todo : create the object here of call another function that returns the objects?
-    
-    LnxParser lp;
+vector<Process> &System::Processes() {
 
+  // todo: fill a vector of process objects
+  // todo : get the process object
+  // todo : add to the vector
+  // toco : fill until no more process obejects left.
+  // todo : create the object here of call another function that returns the
+  // objects?
 
-    processes_=lp.GetProcessData();
-    
-    return processes_;
-    
-    
-     }
+  OSParser lp;
+
+  processes_ = lp.GetProcessData();
+
+  return processes_;
+}
 
 // TODO: Return the system's kernel identifier (string)
-std::string System::Kernel() { 
+std::string System::Kernel() {
 
-   
-    LnxParser lp;
+  OSParser lp;
 
-    string kernel_name = lp.GetKernel();
-  
-  return kernel_name; 
-  }
+  string kernel_name = lp.GetKernel();
+
+  return kernel_name;
+}
 
 // TODO: Return the system's memory utilization
-float System::MemoryUtilization() { 
-  LnxParser lp;
+float System::MemoryUtilization() {
+  OSParser lp;
 
-  return lp.GetMemoryUtilization(); 
-  }
+  return lp.GetMemoryUtilization();
+}
 
 // TODO: Return the operating system name
-std::string System::OperatingSystem() { 
+std::string System::OperatingSystem() {
 
-   LnxParser lp;
-  
-  return lp.GetOS(); 
-  }
+  OSParser lp;
+
+  return lp.GetOS();
+}
 
 // TODO: Return the number of processes actively running on the system
-int System::RunningProcesses() { 
-  
-  LnxParser lp;
+int System::RunningProcesses() {
 
-  return lp.GetActiveProcesses(); 
+  OSParser lp;
 
+  return lp.GetActiveProcesses();
 }
 
 // TODO: Return the total number of processes on the system
-int System::TotalProcesses() { 
-  
-  LnxParser lp;
+int System::TotalProcesses() {
 
-  return lp.GetTotalProcesses(); 
+  OSParser lp;
 
-  }
+  return lp.GetTotalProcesses();
+}
 
 // TODO: Return the number of seconds since the system started running
-long int System::UpTime() { 
+long int System::UpTime() {
 
-  LnxParser lp;
-  
+  OSParser lp;
+
   return lp.GetUpTime();
-
 }

@@ -1,44 +1,32 @@
 #ifndef LNX_OS_PARSE_H
 #define LNX_OS_PARSE_H
 
-
-#include <iostream>
-#include <vector>
+#include "IOSparser.h"
 #include "process.h"
 #include "processor.h"
+#include <iostream>
+#include <vector>
 using namespace std;
 
-class LnxParser
-{
+class OSParser : public IOSParser {
 
 public:
+  vector<int> pidvect;
 
- vector<int> pidvect;
+  vector<Process> lnxprocesses = {};
 
- vector<Process> lnxprocesses = {}; 
+// for process data
+  virtual vector<Process> GetProcessData() override;
 
- vector <Process> GetProcessData();
+  // for system data
 
-  Processor& Cpu();                   // TODO: See src/system.cpp
-  std::vector<Process>& Processes();  // TODO: See src/system.cpp
-  float MemoryUtilization();          // TODO: See src/system.cpp
-  long UpTime();                      // TODO: See src/system.cpp
-  int TotalProcesses();               // TODO: See src/system.cpp
-  int RunningProcesses();             // TODO: See src/system.cpp
-  std::string Kernel();               // TODO: See src/system.cpp
-  std::string OperatingSystem();      // TODO: See src/system.cpp
-
-// for system
-
-  string GetKernel();
-  string GetOS();
-  long int GetUpTime();
-  int GetTotalProcesses();
-  int GetActiveProcesses(); 
-  float GetMemoryUtilization();
-  std::vector<std::string> GetCpuUtilization();
-
+  virtual string GetKernel() override;
+  virtual string GetOS() override;
+  virtual long int GetUpTime() override;
+  virtual int GetTotalProcesses() override;
+  virtual int GetActiveProcesses() override;
+  virtual float GetMemoryUtilization() override;
+  virtual std::vector<std::string> GetCpuUtilization() override;
 };
-
 
 #endif
