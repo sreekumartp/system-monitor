@@ -80,7 +80,7 @@ vector<Process> OSParser::GetProcessData() {
       lnxprocesses.emplace_back(prcs);
     }
 
-   // reverse(lnxprocesses.begin(), lnxprocesses.end());
+    reverse(lnxprocesses.begin(), lnxprocesses.end());
   }
 
   return lnxprocesses;
