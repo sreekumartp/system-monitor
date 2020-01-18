@@ -9,7 +9,7 @@
 
 class System {
 public:
-  Processor &Cpu();                  // TODO: See src/system.cpp
+  std::vector<string> &Cpu();                  // TODO: See src/system.cpp
   std::vector<Process> &Processes(); // TODO: See src/system.cpp
   float MemoryUtilization();         // TODO: See src/system.cpp
   long UpTime();                     // TODO: See src/system.cpp
@@ -17,10 +17,11 @@ public:
   int RunningProcesses();            // TODO: See src/system.cpp
   std::string Kernel();              // TODO: See src/system.cpp
   std::string OperatingSystem();     // TODO: See src/system.cpp
-
+  int GetNumOfCPU();
   // TODO: Define any necessary private members
 private:
-  Processor cpu_ = {};
+  int num_of_cpu_=0;
+  vector<string> cpu_;
   std::vector<Process> processes_ = {};
 };
 

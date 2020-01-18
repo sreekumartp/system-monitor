@@ -5,7 +5,7 @@
 #include <string>
 #include <unistd.h>
 #include <vector>
-
+#include <iomanip>
 #include "linux_parser.h"
 
 using std::stof;
@@ -158,21 +158,23 @@ vector<string> LinuxParser::CpuUtilization() {
 
   stringstream ss;
   string line;
-  float util;
-  float total_time;
+  string cpuid;
+  float util=0.00;
+  float total_time=0.00;
 
   long num_cpus = sysconf(_SC_NPROCESSORS_ONLN);
-  vector<string> cpu(num_cpus, "0");
+  vector<string> cpu(num_cpus+1, "0");
   long count = 0;
 
   std::ifstream stream(kProcDirectory + kStatFilename);
 
   if (stream.is_open()) {
 
-    while (std::getline(stream, line) && count < num_cpus) {
+  
+
+    while (std::getline(stream, line) && count < num_cpus+1) {
       std::istringstream linestream(line);
-      linestream >> user >> nice >> system >> idle >> iowait >> irq >>
-          softirq >> steal >> guest >> guest_nice;
+      linestream >> cpuid >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
 
    
       total_time = stof(nice, nullptr);
@@ -182,14 +184,16 @@ vector<string> LinuxParser::CpuUtilization() {
       total_time += stof(irq, nullptr);
       total_time += stof(softirq, nullptr);
       total_time += stof(steal, nullptr);
+  
 
       float idle_time = stof(idle, nullptr);
-      util = (1.0 - idle_time / total_time);
+    
+      util = (total_time - idle_time )/ total_time;
 
       std::ostringstream ss;
       ss << util;
-      std::string s(ss.str());
-      cpu[count] = s;
+     
+      cpu[count] = ss.str();
       count++;
     }
     stream.close();
@@ -298,11 +302,11 @@ string LinuxParser::Ram(int pid) {
 
         stringstream val(value);
         stringstream ss2;
-        float x = 0;
+        float x = 0.00;
 
         x = stof(val.str(), nullptr);
         x = x / 1024;
-        ss2 << x;
+        ss2 << std::fixed << std::setprecision(2)<< x;
 
         auto value1 = ss2.str();
 
@@ -477,7 +481,7 @@ float LinuxParser::Cpu(int pid) {
   string str1[53];
 
   long ticks_per_sec = 0;
-  long uptime = 0;
+  float uptime = 0.00;
   long p_utime = 0;
   long p_stime = 0;
   long p_cutime = 0;
@@ -492,7 +496,7 @@ float LinuxParser::Cpu(int pid) {
 
     std::istringstream linestream(line);
     linestream >> str1[0] >> str1[1];
-    uptime = std::stol(str1[0], nullptr);
+    uptime = std::stof(str1[0], nullptr);
     stream.close();
   }
 
@@ -512,11 +516,11 @@ float LinuxParser::Cpu(int pid) {
         str1[41] >> str1[42] >> str1[43] >> str1[44] >> str1[45] >> str1[46] >>
         str1[47] >> str1[48] >> str1[49] >> str1[50] >> str1[51];
 
-    p_utime = std::stol(str1[13], nullptr);
-    p_stime = std::stol(str1[14], nullptr);
-    p_cutime = std::stol(str1[15], nullptr);
-    p_cstime = std::stol(str1[16], nullptr);
-    p_starttime = std::stol(str1[21], nullptr);
+    p_utime = std::stol(str1[13], nullptr,10);
+    p_stime = std::stol(str1[14], nullptr,10);
+    p_cutime = std::stol(str1[15], nullptr,10);
+    p_cstime = std::stol(str1[16], nullptr,10);
+    p_starttime = std::stol(str1[21], nullptr,10);
 
     total_time = p_utime + p_stime;
     total_time = total_time + p_cutime + p_cstime;
@@ -524,7 +528,7 @@ float LinuxParser::Cpu(int pid) {
 
     ticks_per_sec = sysconf(_SC_CLK_TCK);
     float secs = (uptime - (p_starttime / ticks_per_sec));
-    cpu_usage = 100.0 * ((total_time / ticks_per_sec) / secs);
+    cpu_usage =  ((total_time / ticks_per_sec) / secs);
   
   }
 

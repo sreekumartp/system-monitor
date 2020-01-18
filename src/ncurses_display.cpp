@@ -3,6 +3,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <sstream>
 
 #include "format.h"
 #include "ncurses_display.h"
@@ -32,16 +33,35 @@ void NCursesDisplay::DisplaySystem(System &system, WINDOW *window) {
   int row{0};
   mvwprintw(window, ++row, 2, ("OS: " + system.OperatingSystem()).c_str());
   mvwprintw(window, ++row, 2, ("Kernel: " + system.Kernel()).c_str());
-  mvwprintw(window, ++row, 2, "CPU: ");
-  wattron(window, COLOR_PAIR(1));
-  mvwprintw(window, row, 10, "");
-  wprintw(window, ProgressBar(system.Cpu().Utilization()).c_str());
-  wattroff(window, COLOR_PAIR(1));
+
+  float x=0.0;
+
+  vector<string> util = system.Cpu();
+
+  size_t num_of_cpu=util.size()-1;
+
+  for(int i=1; i<=(int) num_of_cpu;i++)
+  {
+    std::ostringstream ss;
+  
+    ss << "CPU" << i;
+
+    x = std::stof(util[i]);
+    mvwprintw(window, ++row, 2, ss.str().c_str());
+    
+    mvwprintw(window, row, 10, "");
+
+    wprintw(window, ProgressBar(x).c_str(),nullptr);
+  }
+
+
+ 
   mvwprintw(window, ++row, 2, "Memory: ");
-  wattron(window, COLOR_PAIR(1));
+ 
   mvwprintw(window, row, 10, "");
+  
   wprintw(window, ProgressBar(system.MemoryUtilization()).c_str());
-  wattroff(window, COLOR_PAIR(1));
+
   mvwprintw(window, ++row, 2,
             ("Total Processes: " + to_string(system.TotalProcesses())).c_str());
   mvwprintw(
@@ -57,10 +77,10 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process> &processes,
   int row{0};
   int const pid_column{2};
   int const user_column{9};
-  int const cpu_column{16};
-  int const ram_column{26};
-  int const time_column{35};
-  int const command_column{46};
+  int const cpu_column{20};
+  int const ram_column{30};
+  int const time_column{39};
+  int const command_column{50};
   wattron(window, COLOR_PAIR(2));
   mvwprintw(window, ++row, pid_column, "PID");
   mvwprintw(window, row, user_column, "USER");
@@ -89,7 +109,7 @@ void NCursesDisplay::Display(System &system, int n) {
   start_color(); // enable color
 
   int x_max{getmaxx(stdscr)};
-  WINDOW *system_window = newwin(9, x_max - 1, 0, 0);
+  WINDOW *system_window = newwin(13, x_max - 1, 0, 0);
   WINDOW *process_window =
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
 
