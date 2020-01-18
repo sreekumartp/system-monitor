@@ -9,6 +9,38 @@ using namespace std;
 using namespace LinuxParser;
 
 
+    string LnxParser::GetKernel()
+    {
+      return LinuxParser::Kernel();
+      
+    }
+    string LnxParser::GetOS()
+    {
+      return LinuxParser::OperatingSystem();
+      
+    }
+
+    long int LnxParser::GetUpTime()
+    {
+
+      return LinuxParser::UpTime();
+
+    }
+
+    int LnxParser::GetTotalProcesses()
+    {
+
+      return LinuxParser::TotalProcesses();
+
+    }
+
+       int LnxParser:: GetActiveProcesses()
+      {
+
+      
+        return LinuxParser::RunningProcesses();
+      }
+
 
     vector <Process> LnxParser::GetProcessData()
     {

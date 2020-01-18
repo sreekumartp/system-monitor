@@ -28,7 +28,13 @@ public:
   std::string Kernel();               // TODO: See src/system.cpp
   std::string OperatingSystem();      // TODO: See src/system.cpp
 
+// for system
 
+  string GetKernel();
+  string GetOS();
+  long int GetUpTime();
+  int GetTotalProcesses();
+  int GetActiveProcesses(); 
 };
 
 

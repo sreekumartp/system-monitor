@@ -41,11 +41,12 @@ string LinuxParser::OperatingSystem() {
 string LinuxParser::Kernel() {
   string os, kernel;
   string line;
+  string version;
   std::ifstream stream(kProcDirectory + kVersionFilename);
   if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    linestream >> os >> kernel;
+    linestream >> os >> version >> kernel;
   }
   return kernel;
 }
@@ -74,7 +75,28 @@ vector<int> LinuxParser::Pids() {
 float LinuxParser::MemoryUtilization() { return 0.0; }
 
 // TODO: Read and return the system uptime
-long LinuxParser::UpTime() { return 0; }
+long LinuxParser::UpTime() { 
+
+  long int utime;
+  string line;
+  string uptime;
+  string idletime;
+  
+  std::ifstream stream(kProcDirectory + kUptimeFilename);
+  if (stream.is_open()) {
+
+    //TODO: read lines and normalize them for easy parsing
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    linestream  >>  uptime >> idletime;
+    utime = std::stol(uptime, nullptr, 10);
+    stream.close();
+    
+  }
+  
+  return utime; 
+  
+  }
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
@@ -93,10 +115,64 @@ long LinuxParser::IdleJiffies() { return 0; }
 vector<string> LinuxParser::CpuUtilization() { return {}; }
 
 // TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
+int LinuxParser::TotalProcesses() { 
+  vector<int> vect_of_pids;
+
+  vect_of_pids=Pids();
+  
+  return vect_of_pids.size(); 
+  }
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
+int LinuxParser::RunningProcesses() { 
+  
+  stringstream ss;
+  string key;
+  string value;
+  string line;
+  int ActiveProcess=0;
+  //first get list of process.
+
+   vector<int> vect_of_pids;
+
+  vect_of_pids=Pids();
+  //then open /proc/[pid]/stat
+
+  int num_of_pids=vect_of_pids.size();
+    
+  for(int i=0;i < num_of_pids;i++) 
+  { 
+     ss << vect_of_pids[i];
+
+      std::ifstream stream(kProcDirectory + ss.str()+ kStatusFilename);
+      if (stream.is_open()) 
+      {
+
+          while (std::getline(stream, line)) 
+          {
+              std::istringstream linestream(line);
+              linestream  >>  key >> value;
+          
+              if (key == "State:")
+             {
+                if(value == "R") 
+                {
+                  ActiveProcess++;
+                }
+
+                stream.close();
+                break;
+              }
+          }
+        
+          
+      }
+
+    
+  }
+  return ActiveProcess;
+  
+   }
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
@@ -279,7 +355,7 @@ long int LinuxParser::UpTime(int pid)
 stringstream ss;
 string line;
 string value;
-long int ut=0;
+long int  ut=0;
 
 string str1[23];
   
@@ -398,11 +474,11 @@ std::ifstream stream("/proc/uptime");
       str1[40] >> str1[41] >> str1[42] >> str1[43] >> str1[44] >> str1[45] >> str1[46] >> str1[47] >> str1[48] >> str1[49] >> \
       str1[50] >> str1[51] ;
 
-      p_utime=std::stof(str1[13],nullptr);
-      p_stime=std::stof(str1[14],nullptr); 
-      p_cutime=std::stof(str1[15],nullptr);
-      p_cstime=std::stof(str1[16],nullptr);
-      p_starttime=std::stof(str1[21],nullptr);
+      p_utime=std::stol(str1[13],nullptr);
+      p_stime=std::stol(str1[14],nullptr); 
+      p_cutime=std::stol(str1[15],nullptr);
+      p_cstime=std::stol(str1[16],nullptr);
+      p_starttime=std::stol(str1[21],nullptr);
 
       total_time= p_utime+p_stime;
       total_time = total_time + p_cutime + p_cstime;
@@ -410,7 +486,7 @@ std::ifstream stream("/proc/uptime");
       
       ticks_per_sec=sysconf(_SC_CLK_TCK);
       //seconds = uptime - (starttime / Hertz)
-      float secs = (float) (uptime - (p_starttime/ticks_per_sec));
+      float secs =  (uptime - (p_starttime/ticks_per_sec));
         //std::cout << "secs : " << secs <<std::endl;
       //cpu_usage = 100 * ((total_time / Hertz) / seconds)
       
