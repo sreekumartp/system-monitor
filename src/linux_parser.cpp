@@ -361,9 +361,9 @@ string LinuxParser::User(int pid[[maybe_unused]]) {
 
   // open /etc/<pid>/status can retrieve the UID
   ss << pid;
-  std::ifstream stream("/proc/894/status");
+ 
 
-//  std::ifstream stream(kProcDirectory + ss.str() + kStatusFilename);
+  std::ifstream stream(kProcDirectory + ss.str() + kStatusFilename);
   if (stream.is_open()) {
 
     // TODO: read lines and normalize them for easy parsing
