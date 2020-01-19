@@ -131,17 +131,164 @@ long LinuxParser::UpTime() {
 }
 
 // TODO:Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+long LinuxParser::Jiffies() { 
+
+
+string user;
+  string nice;
+  string system;
+  string idle;
+  string iowait;
+  string irq;
+  string softirq;
+  string steal;
+  string guest;
+  string guest_nice;
+
+  stringstream ss;
+  string line;
+  string cpuid;
+ 
+  long totaljiffies;
+
+
+
+  std::ifstream stream(kProcDirectory + kStatFilename);
+
+  if (stream.is_open()) {
+
+  
+      //first line to the stat file is the cpu total information
+      std::getline(stream, line) ;
+      std::istringstream linestream(line);
+      linestream >> cpuid >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+
+   
+      totaljiffies = stol(nice, nullptr,10);
+      totaljiffies += stol(system, nullptr,10);
+      totaljiffies += stol(idle, nullptr,10);
+      totaljiffies += stol(iowait, nullptr,10);
+      totaljiffies += stol(irq, nullptr,10);
+      totaljiffies += stol(softirq, nullptr,10);
+      totaljiffies += stol(steal, nullptr,10);
+  
+    }
+   
+    return totaljiffies;
+  
+ }
 
 // TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
+
+long LinuxParser::ActiveJiffies(int pid) {
+
+
+  stringstream ss;
+  string line;
+  string value;
+  string str1[53];
+
+  long p_utime = 0;
+  long p_stime = 0;
+
+  long active_jiffes=0;
+
+ 
+  ss << pid;
+
+  std::ifstream stream(kProcDirectory + ss.str() + kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    linestream >> str1[0] >> str1[1] >> str1[2] >> str1[3] >> str1[4] >>
+        str1[5] >> str1[6] >> str1[7] >> str1[8] >> str1[9] >> str1[10] >>
+        str1[11] >> str1[12] >> str1[13] >> str1[14] ;
+
+    p_utime = std::stol(str1[13], nullptr,10);
+    p_stime = std::stol(str1[14], nullptr,10);
+        
+    active_jiffes=p_utime+p_stime;
+
+  }
+
+  return active_jiffes;
+}
+
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() { 
+  
+  string user;
+  string nice;
+  string system;
+  string idle;
+  string iowait;
+  string irq;
+  string softirq;
+  string steal;
+  string guest;
+  string guest_nice;
 
+  stringstream ss;
+  string line;
+  string cpuid;
+  long activejiffies=0;
+  
+
+  std::ifstream stream(kProcDirectory + kStatFilename);
+
+  if (stream.is_open()) {
+      
+      //first line to the stat file is the cpu total information
+      std::getline(stream, line);
+      std::istringstream linestream(line);
+      linestream >> cpuid >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+ 
+      activejiffies = stol(nice, nullptr,10);
+      activejiffies += stol(system, nullptr,10);
+      activejiffies += stol(iowait, nullptr,10);
+      activejiffies += stol(irq, nullptr,10);
+      activejiffies += stol(softirq, nullptr,10);
+      activejiffies += stol(steal, nullptr,10);
+
+    }
+ 
+    return activejiffies;
+  }
+  
+ 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() { 
+  
+  string user;
+  string nice;
+  string system;
+  string idle;
+  string iowait;
+  string irq;
+  string softirq;
+  string steal;
+  string guest;
+  string guest_nice;
+
+  stringstream ss;
+  string line;
+  string cpuid;
+  
+  std::ifstream stream(kProcDirectory + kStatFilename);
+
+  if (stream.is_open()) {
+
+      //first line to the stat file is the cpu total information
+      std::getline(stream, line) ;
+      std::istringstream linestream(line);
+      linestream >> cpuid >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal >> guest >> guest_nice;
+        
+        
+    }
+   
+  return stol(idle, nullptr,10);
+  }
 
 // TODO: Read and return CPU utilization
 vector<string> LinuxParser::CpuUtilization() {
