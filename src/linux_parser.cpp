@@ -101,7 +101,7 @@ float LinuxParser::MemoryUtilization() {
       // we will just let the loop run through to exit
     }
 
-    stream.close();
+   // stream.close();
   }
 
   return ((memtotal - memfree) / memtotal);
@@ -123,7 +123,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> uptime >> idletime;
     utime = std::stol(uptime, nullptr, 10);
-    stream.close();
+  //  stream.close();
   }
 
   return utime;
@@ -196,7 +196,7 @@ vector<string> LinuxParser::CpuUtilization() {
       cpu[count] = ss.str();
       count++;
     }
-    stream.close();
+   // stream.close();
     return cpu;
   }
 
@@ -242,7 +242,7 @@ int LinuxParser::RunningProcesses() {
             ActiveProcess++;
           }
 
-          stream.close();
+   
           break;
         }
       }
@@ -267,7 +267,7 @@ string LinuxParser::Command(int pid[[maybe_unused]]) {
     std::getline(stream, line);
     std::istringstream linestream(line);
     linestream >> cmd;
-    stream.close();
+   // stream.close();
   }
 
   return cmd;
@@ -311,7 +311,7 @@ string LinuxParser::Ram(int pid) {
         auto value1 = ss2.str();
 
         // std::cout << "value :" << value << std::endl;
-        stream.close();
+      //  stream.close();
         return value1;
       } else
         value = "0";
@@ -337,7 +337,7 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) {
       std::istringstream linestream(line);
       linestream >> str1[0] >> str1[1];
       if (str1[0] == "Uid:") {
-        stream.close();
+      //  stream.close();
         return str1[1];
       }
     }
@@ -373,7 +373,7 @@ string LinuxParser::User(int pid[[maybe_unused]]) {
         break;
       }
     }
-    stream.close();
+  //  stream.close();
   }
 
   //  open /etc/passwd and get the user corresponding to the uid.
@@ -387,7 +387,7 @@ string LinuxParser::User(int pid[[maybe_unused]]) {
       linestream2 >> str1[0] >> str1[1] >> str1[2];
       if (str1[2] == uid) {
         user = str1[0];
-        stream.close();
+ 
         return user;
       }
     }
@@ -428,7 +428,7 @@ long int LinuxParser::UpTime(int pid) {
       Format::ElapsedTime(ut);
       // stringstream val(str1[22]);
       // val >> ut;
-      stream.close();
+    //  stream.close();
       return ut;
     }
   }

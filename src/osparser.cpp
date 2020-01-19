@@ -80,7 +80,19 @@ vector<Process> OSParser::GetProcessData() {
       lnxprocesses.emplace_back(prcs);
     }
 
-    reverse(lnxprocesses.begin(), lnxprocesses.end());
+
+    // sort according to cpu utilization for useful display
+    std::sort ( lnxprocesses.begin(), lnxprocesses.end(), 
+                []( Process & a,  Process & b){
+
+                    return (a.CpuUtilization() > b.CpuUtilization());
+                    
+                    }
+                    
+                    );
+   
+    
+    
   }
 
   return lnxprocesses;
