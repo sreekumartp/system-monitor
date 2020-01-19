@@ -214,7 +214,7 @@ int LinuxParser::TotalProcesses() {
 }
 
 // Read and return the number of running processes
-int LinuxParser::RunningProcesses() {
+ int LinuxParser::RunningProcesses() {
 
  
   string key;
@@ -222,32 +222,35 @@ int LinuxParser::RunningProcesses() {
   string line;
   int ActiveProcess = 0;
   string state;
-  // first get list of process.
+  
+  
+  //  get list of process.
 
   vector<int> vect_of_pids=Pids();
 
-  int num_of_pids = vect_of_pids.size();
+  
+  for(auto it = std::begin(vect_of_pids); it != std::end(vect_of_pids); ++it) {
 
-  // TODO: modify this to iteratot of C++11 standard
-  for (int i = 0; i < num_of_pids; i++) {
-    
-    int pid=vect_of_pids.at(i);
-    stringstream ss;
-    ss << pid;
-     
-    std::ifstream stream(kProcDirectory + ss.str() + kStatFilename);
-    if (stream.is_open()) {
+        int pid= *it;
+         
+          stringstream ss;
+          ss << pid;
+          
+          std::ifstream stream(kProcDirectory + ss.str() + kStatFilename);
+          if (stream.is_open()) {
 
 
-        std::getline(stream, line);
-        std::istringstream linestream(line);
-        linestream >> key >> value >> state;
-        if(state == "R") ActiveProcess++;
+              std::getline(stream, line);
+              std::istringstream linestream(line);
+              linestream >> key >> value >> state;
+              if(state == "R") ActiveProcess++;
 
-    }
-  }
+          } 
+        } 
+
   return ActiveProcess;
 }
+
 
 
 
