@@ -14,6 +14,7 @@ using std::string;
 using std::to_string;
 using std::vector;
 using std::stringstream;
+//using namespace std;
 
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
@@ -215,41 +216,40 @@ int LinuxParser::TotalProcesses() {
 // Read and return the number of running processes
 int LinuxParser::RunningProcesses() {
 
-  stringstream ss;
+ 
   string key;
   string value;
   string line;
   int ActiveProcess = 0;
+  string state;
   // first get list of process.
 
-  vector<int> vect_of_pids;
+  vector<int> vect_of_pids=Pids();
 
   int num_of_pids = vect_of_pids.size();
 
   // TODO: modify this to iteratot of C++11 standard
   for (int i = 0; i < num_of_pids; i++) {
-    ss << vect_of_pids[i];
-
-    std::ifstream stream(kProcDirectory + ss.str() + kStatusFilename);
+    
+    int pid=vect_of_pids.at(i);
+    stringstream ss;
+    ss << pid;
+     
+    std::ifstream stream(kProcDirectory + ss.str() + kStatFilename);
     if (stream.is_open()) {
 
-      while (std::getline(stream, line)) {
+
+        std::getline(stream, line);
         std::istringstream linestream(line);
-        linestream >> key >> value;
+        linestream >> key >> value >> state;
+        if(state == "R") ActiveProcess++;
 
-        if (key == "State:") {
-          if (value == "R") {
-            ActiveProcess++;
-          }
-
-   
-          break;
-        }
-      }
     }
   }
   return ActiveProcess;
 }
+
+
 
 // Read and return the command associated with a process
 

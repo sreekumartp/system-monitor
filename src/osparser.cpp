@@ -6,14 +6,17 @@
 
 using namespace std;
 
-
 string OSParser::GetKernel() { return LinuxParser::Kernel(); }
 string OSParser::GetOS() { return LinuxParser::OperatingSystem(); }
 long int OSParser::GetUpTime() { return LinuxParser::UpTime(); }
 int OSParser::GetTotalProcesses() { return LinuxParser::TotalProcesses(); }
 int OSParser::GetActiveProcesses() { return LinuxParser::RunningProcesses(); }
-float OSParser::GetMemoryUtilization() { return LinuxParser::MemoryUtilization();}
-std::vector<std::string> OSParser::GetCpuUtilization() { return LinuxParser::CpuUtilization();}
+float OSParser::GetMemoryUtilization() {
+  return LinuxParser::MemoryUtilization();
+}
+std::vector<std::string> OSParser::GetCpuUtilization() {
+  return LinuxParser::CpuUtilization();
+}
 
 vector<Process> OSParser::GetProcessData() {
 
@@ -62,8 +65,8 @@ vector<Process> OSParser::GetProcessData() {
       cmd = LinuxParser::Command(pid);
 
       // get the cpu utilization for the pid
-     /*  auto Jiff = ActiveJiffies(pid);
- */
+      /*  auto Jiff = ActiveJiffies(pid);
+  */
       // get cpu usage for the pid
       float cpu_usage = LinuxParser::Cpu(pid);
 
@@ -80,19 +83,15 @@ vector<Process> OSParser::GetProcessData() {
       lnxprocesses.emplace_back(prcs);
     }
 
-
     // sort according to cpu utilization for useful display
-    std::sort ( lnxprocesses.begin(), lnxprocesses.end(), 
-                []( Process & a,  Process & b){
+    std::sort(lnxprocesses.begin(), lnxprocesses.end(),
+              [](Process &a, Process &b) {
 
-                    return (a.CpuUtilization() > b.CpuUtilization());
-                    
-                    }
-                    
-                    );
-   
-    
-    
+                return (a.CpuUtilization() > b.CpuUtilization());
+
+              }
+
+              );
   }
 
   return lnxprocesses;
