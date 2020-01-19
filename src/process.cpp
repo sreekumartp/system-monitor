@@ -23,7 +23,7 @@ string Process::Ram() { return _ram; }
 string Process::User() { return _user; }
 long int Process::UpTime() { return _uptime; }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
+// Overload the "less than" comparison operator for Process objects
+
 bool Process::operator<(Process const &a[[maybe_unused]]) const { if(_pid< a._pid) return true;
 else return false; }

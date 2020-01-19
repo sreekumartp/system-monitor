@@ -6,9 +6,9 @@ using namespace std;
 
 class Processor {
 public:
-  float Utilization(); // TODO: See src/processor.cpp
+  float Utilization(); 
   void SetUtlization(string util);
-  // TODO: Declare any necessary private members
+ 
 private:
   string utilization_;
 };

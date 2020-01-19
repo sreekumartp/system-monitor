@@ -29,7 +29,6 @@ vector<Process> OSParser::GetProcessData() {
 
   pidvect = LinuxParser::Pids();
 
-  // cout << "OSParser:getpids() " << endl;
 
   // TODO: Create a vector of process objects
   // declare  variable
@@ -65,8 +64,8 @@ vector<Process> OSParser::GetProcessData() {
       cmd = LinuxParser::Command(pid);
 
       // get the cpu utilization for the pid
-      /*  auto Jiff = ActiveJiffies(pid);
-  */
+      //auto Jiff = LinuxParser::ActiveJiffies(pid);
+  
       // get cpu usage for the pid
       float cpu_usage = LinuxParser::Cpu(pid);
 

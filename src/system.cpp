@@ -15,28 +15,16 @@ using std::string;
 using std::vector;
 
 
-//int System::GetNumOfCPU(){ return num_of_cpu_;}
-
-
 // TODO: Return the system's CPU
 vector<string> &System::Cpu() {
 
-  // Processor p ;
+ 
 
   OSParser lp;
 
    cpu_ = lp.GetCpuUtilization();
   
-  
-  
-/*   for (int i = 0; i < (int)cpu.size(); i++) {
 
-    Processor p;
-    p.SetUtlization(cpu[i]);
-   
-    cpu_[i] = p;
-    return cpu_;
-  } */
   return cpu_;
 }
 
