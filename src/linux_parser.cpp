@@ -361,22 +361,24 @@ string LinuxParser::User(int pid[[maybe_unused]]) {
 
   // open /etc/<pid>/status can retrieve the UID
   ss << pid;
-  std::ifstream stream(kProcDirectory + ss.str() + kStatusFilename);
+  std::ifstream stream("/proc/894/status");
+
+//  std::ifstream stream(kProcDirectory + ss.str() + kStatusFilename);
   if (stream.is_open()) {
 
     // TODO: read lines and normalize them for easy parsing
     while (std::getline(stream, line)) {
-      std::replace(line.begin(), line.end(), ' ', '_');
+      std::replace(line.begin(), line.end(), '\t', ' ');
       std::istringstream linestream(line);
       linestream >> str1[0] >> str1[1];
       if (str1[0] == "Uid:") {
-        std::replace(line.begin(), line.end(), '_', ' ');
+       // std::replace(line.begin(), line.end(), '\t', ' ');
         // UID is stored in token 2
         uid = str1[1];
         break;
       }
     }
-  //  stream.close();
+    stream.close();
   }
 
   //  open /etc/passwd and get the user corresponding to the uid.
